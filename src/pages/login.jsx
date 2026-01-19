@@ -1,60 +1,78 @@
 import { useState } from "react"
+import { loginUser } from "../services/auth";
+import toast, { ToastBar } from "react-hot-toast";
 
-export default function Login({onLogin, goRegister}){
+export default function Login({goQuiz, goRegister}){
     const [email,setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
 
     const handleLogin = async () => {
         setLoading(true);
-        setError("");
+        try {
+            const res = await loginUser (email, password);
+            
+            localStorage.setItem("access_token", res.data.access_token);
+            localStorage.setItem("refresh_token", res.data.refresh_token);          
 
-        try{
-            const res = await fetch ("/auth/login", {
-                method:"POST",
-                headers:{
-                    "Content-Type" : "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
-            if (!res.ok){
-                throw new error ("Login Gagal");
-            }
-            const data = await res.json();
-            console.log("login sukses", data);
-
-            onLogin(data);
-        } catch (err) {
-            setError(err.message)
+            toast.success('Berhasil Login')
+            goQuiz();
+        } catch (err){
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
     }
 
     return (
-    <div className="flex justify-center items-center min-h-screen">
-    <div className="bg-[#FCF8F8] w-96 text-center border-2 border-gray-400 rounded-lg">
-        <h1 className="text-2xl font-bold m-5">Login</h1>
-        <div className="flex flex-col items-center">
-            <input type="email" label="email" className="h-7 w-xs border p-1 rounded m-2" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
-            <input type="password" label="email" className="h-7 w-xs border p-1 rounded m-2" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
-            
-            <button 
-            onClick={handleLogin} 
-            className={`text-md text-white rounded-lg cursor-pointer w-32 p-0.5 m-3
-            ${loading ? 'bg-gray-500' : 'bg-blue-600'}`}>    
-            {loading ? 'loading...' : 'login'}
-            </button>
-            
-            <p className="text-xs">Belum punya akun ?</p>
-            <button onClick={goRegister}className="text-md text-green-600 border-1 border-green-600 rounded-lg cursor-pointer w-32 p-0.5 m-3">Daftar</button>
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+            <div className="bg-white w-96 p-8 border border-gray-200 rounded-xl shadow-lg">
+                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
+                
+                <div className="flex flex-col gap-4">
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input 
+                            type="email" 
+                            className="w-full h-10 border border-gray-300 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            placeholder="email@example.com"
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input 
+                            type="password" 
+                            className="w-full h-10 border border-gray-300 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            placeholder=""
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    
+                    <button 
+                        onClick={handleLogin}
+                        disabled={loading} 
+                        className={`w-full h-11 text-white font-medium rounded-lg mt-2 transition-colors ${
+                            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                        }`}>
+                        {loading ? 'Loading' : 'Login'}
+                    </button>
+
+                    <div className="text-center mt-4">
+                        <p className="text-sm text-gray-600">already have an account?{' '}
+                            <button 
+                                onClick={goRegister} 
+                                className="text-blue-600 font-medium hover:underline">
+                                Register
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
     )
 }
