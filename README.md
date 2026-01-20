@@ -1,16 +1,26 @@
-# React + Vite
+Menjalankan Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+1. install dependencies yang akan digunakan, dalam hal ini saya menginstall
+   a. npm create vite@latest . -- --template react (instalasi react)
+   b. npm install tailwindcss @tailwindcss/vite (instalasi taliwind)
+   c npm install react-hot-toast (instalasi toaster untuk errror/success handling)
 
-Currently, two official plugins are available:
+2. Menjalankan development server
+   NPM run dev, lalu o untuk membukanya di lokal server
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3. Build Untuk Production
+   npm run build
 
-## React Compiler
+4. Deploy ke Github Pages
+   npm run deploy
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+src/
+├─ components/ Komponen UI (Header)
+├─ services/ API calls (auth.js)
+├─ pages/ Halaman (ActiveQuiz, Profile, HistoryQuiz, dll.)
+├─ App.jsx Root component + routing
+├─ main.jsx Entry point
+public/
+├─ index.html
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Base API URL berada di src/services/auth.js
